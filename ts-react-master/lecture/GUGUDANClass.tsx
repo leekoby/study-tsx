@@ -7,11 +7,13 @@ interface State {
   value: string;
   result: string;
 }
-
-class GuGuDan extends Component<{}, State> {
+const createRandomNumber = () => {
+  return Math.ceil(Math.random() * 9);
+};
+class GuGuDanClass extends Component<{}, State> {
   state = {
-    first: Math.ceil(Math.random() * 9),
-    second: Math.ceil(Math.random() * 9),
+    first: createRandomNumber(),
+    second: createRandomNumber(),
     value: '',
     result: '',
   };
@@ -72,4 +74,4 @@ class GuGuDan extends Component<{}, State> {
   }
 }
 
-export default GuGuDan;
+export default GuGuDanClass;

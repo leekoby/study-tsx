@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useRef, useState } from 'react';
 import Try from './Try';
-import { TryInfo } from './types';
+import { TryInfo } from './Types';
 
 const getNumbers = () => {
   const candidates = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -96,6 +96,7 @@ const NumberBaseball = () => {
           <Try key={`${i + 1}차 시도 : ${v.try}`} tryInfo={v} />
         ))}
       </ul>
+      <div>{result}</div>
     </>
   );
 };

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { useState, useCallback, useRef } from 'react';
 
-const WordRelay = () => {
-  const [word, setWord] = useState<string>('제로초');
+function WordRelay() {
+  const [word, setWord] = useState('이꼬비');
   const [value, setValue] = useState('');
   const [result, setResult] = useState('');
   const inputEl = useRef<HTMLInputElement>(null);
@@ -29,7 +29,7 @@ const WordRelay = () => {
     [word, value]
   );
 
-  const onChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback<(e: React.ChangeEvent<HTMLInputElement>) => void>((e) => {
     setValue(e.currentTarget.value);
   }, []);
 
@@ -37,12 +37,12 @@ const WordRelay = () => {
     <>
       <div>{word}</div>
       <form onSubmit={onSubmitForm}>
-        <input ref={inputEl} value={value} onChange={onChange} />
+        <input type='text' ref={inputEl} value={value} onChange={onChange} />
         <button>입력!</button>
       </form>
       <div>{result}</div>
     </>
   );
-};
+}
 
 export default WordRelay;
