@@ -1,78 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TodoItem from './TodoItem';
+import TodoForm from './TodoForm';
 import { Item } from '../types';
+import TodoFilter from './TodoFilter';
+import { getTodos, createTodo, updateTodo, deleteTodo } from '../api';
 
 export const TodoList: React.FunctionComponent = () => {
-  const [todos, setTodos] = useState<Item[]>([
-    { id: 1, text: 'todo 만들기', complete: false },
-    { id: 2, text: 'jsx 만들기', complete: false },
-    { id: 3, text: 'preproject 만들기', complete: false },
-  ]);
+  const [todos, setTodos] = useState<Item[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Item[]>([]);
+  const [filter, setFilter] = useState<string>('all');
 
-  const [input, setInput] = useState<string>('');
+  const fetchTodo = async () => {
+    const todos = await getTodos();
+    setTodos(todos);
+  };
+
+  useEffect(() => {
+    async function fetchTodos() {
+      const todos = await getTodos();
+      setTodos(todos);
+      setFilteredTodos(todos);
+    }
+
+    fetchTodos();
+  }, []);
+
+  useEffect(() => {
+    const filtered = todos.filter((todo) => {
+      if (filter === 'all') {
+        return true;
+      } else if (filter === 'active') {
+        return !todo.isCompleted;
+      } else if (filter === 'completed') {
+        return todo.isCompleted;
+      }
+    });
+    setFilteredTodos(filtered);
+  }, [todos, filter]);
+
+  const handleCreate = async (todoText: string) => {
+    const newTodo: Item = await createTodo({
+      id: Date.now(),
+      todo: todoText,
+      isCompleted: false,
+      userId: 1,
+    });
+    const createdTodo = await createTodo(newTodo);
+    setTodos([...todos, createdTodo]);
+  };
+
   const handleToggle = (id: number) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, complete: !todo.complete };
-        }
-        return todo;
-      })
+    setTodos((prevTodos) =>
+      prevTodos.map((todo) => (todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo))
     );
   };
-  const handleClick = () => {
-    const newTodo: Item = { id: Date.now(), text: input, complete: false };
-    setTodos([...todos, newTodo]);
+
+  const handleDelete = async (id: number) => {
+    await deleteTodo(id);
+    setTodos(todos.filter((todos) => todos.id !== id));
   };
+
   return (
-    <DIV>
-      <h1> TodoList</h1>
-      <ul>
-        {todos.map((todo) => (
-          <TodoItem todo={todo} handleToggle={handleToggle} />
-        ))}
-      </ul>
-      <Input
-        type='text'
-        placeholder='Add Todo'
-        onChange={(e) => {
-          setInput(e.currentTarget.value);
-        }}
-      />
-      <Button onClick={handleClick}>Add</Button>
-    </DIV>
+    <Container>
+      <Title>Todo List</Title>
+      <TodoForm handleCreate={handleCreate} />
+      <TodoFilter filter={filter} handleFilterChange={setFilter} />
+      {todos.map((todo) => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          handleToggle={handleToggle}
+          handleDelete={handleDelete}
+        />
+      ))}
+    </Container>
   );
 };
 
-const DIV = styled.div`
-  height: 100vh;
+const Container = styled.div`
+  max-width: 500px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  > ul {
-    font-size: 24px;
-  }
 `;
 
-const Input = styled.input`
-  height: 30px;
-  width: 50%;
-  background-color: #ffffff;
-  border-radius: 5px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  margin-left: 10px;
-  margin-top: 40px;
-`;
-
-const Button = styled.button`
-  height: 30px;
-  width: 30%;
-  background-color: #1b0fff;
-  color: white;
-  font-size: 1.3rem;
-  margin-top: 10px;
-  cursor: pointer;
+const Title = styled.h1`
+  text-align: center;
 `;

@@ -1,5 +1,6 @@
 export interface Item {
   id: number;
-  text: string;
-  complete: boolean;
+  todo: string;
+  isCompleted: boolean;
+  userId: number;
 }

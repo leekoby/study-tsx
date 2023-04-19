@@ -1,41 +1,30 @@
+import React from 'react';
 import styled from 'styled-components';
 import { Item } from '../types';
 
 interface TodoItemProps {
   todo: Item;
   handleToggle: (id: number) => void;
+  handleDelete: (id: number) => void;
 }
 
-function TodoItem({ todo, handleToggle }: TodoItemProps) {
-  const handleDelete = () => {};
+const TodoItem: React.FunctionComponent<TodoItemProps> = ({ todo, handleToggle, handleDelete }) => {
+  const { id, todo: text, isCompleted } = todo;
 
   return (
-    <ListDiv>
-      <li
-        key={todo.id}
-        onClick={() => {
-          handleToggle(todo.id);
-        }}
-        style={{ textDecoration: todo.complete ? 'line-through' : 'none' }}>
-        {todo.text}
-      </li>
-      <button onClick={handleDelete}>X</button>
-    </ListDiv>
+    <Li isCompleted={isCompleted} onClick={() => handleToggle(id)}>
+      {text}
+      <Button onClick={() => handleDelete(id)}>delete</Button>
+    </Li>
   );
-}
+};
+
 export default TodoItem;
 
-const ListDiv = styled.div`
-  display: flex;
-  margin: 10px;
-  align-items: center;
+const Li = styled.li<{ isCompleted: boolean }>`
+  text-decoration: ${(props) => (props.isCompleted ? 'line-through' : 'none')};
+`;
 
-  > li {
-    list-style: decimal;
-    margin-right: 20px;
-  }
-  > button {
-    height: 40px;
-    width: 40px;
-  }
+const Button = styled.button`
+  margin-left: 8px;
 `;

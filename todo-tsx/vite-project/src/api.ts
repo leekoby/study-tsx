@@ -19,5 +19,5 @@ export const updateTodo = async (updatedTodo: Item): Promise<Item> => {
 };
 
 export const deleteTodo = async (id: number): Promise<void> => {
-  await axios.delete(`${API_BASE_URL}/${id}`);
+  await axios.delete(`${API_BASE_URL}/todos/${id}`);
 };
