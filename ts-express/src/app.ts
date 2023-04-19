@@ -21,7 +21,8 @@ app.use(userMiddleware);
 
 // router
 app.use('/auth', isNotLoggedIn, authRouter);
-app.use('/todos', isLoggedIn, todoRouter);
+// app.use('/todos', isLoggedIn, todoRouter); //여기 수정했음
+app.use('/todos', todoRouter);
 
 // error 처리 미들웨어
 app.use(errorMiddleware);
